@@ -125,7 +125,7 @@ export class ApiService {
 Run the following command to create a new component:
 
 ```bash
-ng generate component item-list --standalone
+ng generate component item-list
 ```
 
 This creates the following files:
@@ -181,7 +181,7 @@ export class ItemListComponent implements OnInit {
 Run the following command to create a new component:
 
 ```bash
-ng generate component add-item --standalone
+ng generate component add-item
 ```
 
 This creates the following files:
@@ -257,13 +257,3 @@ export class AddItemComponent {
 }
 ```
 
----
-
-### Step 7: Integrate the New Component
-Update `app.component.html` to include the `add-item` component:
-
-```html
-<!-- app.component.html -->
-<app-add-item></app-add-item>
-<app-item-list></app-item-list>
-```
