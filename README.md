@@ -30,19 +30,16 @@ To use the `HttpClientModule` in a standalone Angular application, include it in
 #### Example
 
 ```typescript
-// app.config.ts
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+// main.ts
+import { bootstrapApplication } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
 import { provideHttpClient } from '@angular/common/http';
-import { routes } from './app.routes';
 
-export const appConfig: ApplicationConfig = {
+bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
-    provideRouter(routes),
     provideHttpClient()
   ]
-};
+}).catch(err => console.error(err));
 ```
 
 ---
@@ -121,21 +118,32 @@ export class ApiService {
 
 ## Practical Example: Consuming API in a Component
 
-### Step 1: Inject Service into a Component
+### Step 1: Create a Component to Display Items
+Run the following command to create a new component:
+
+```bash
+ng generate component item-list --standalone
+```
+
+This creates the following files:
+- `item-list.component.ts`: Contains the logic for the component.
+- `item-list.component.html`: Contains the template for the component.
+- `item-list.component.css`: Contains the styles for the component.
+
+#### Sample Code
 
 ```typescript
-// app.component.ts
+// item-list.component.ts
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from './api.service';
+import { ApiService } from '../api.service';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-item-list',
   standalone: true,
-  imports: [],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  templateUrl: './item-list.component.html',
+  styleUrls: ['./item-list.component.css']
 })
-export class AppComponent implements OnInit {
+export class ItemListComponent implements OnInit {
   items: any[] = [];
   errorMessage: string = '';
 
@@ -158,7 +166,7 @@ export class AppComponent implements OnInit {
 ### Step 2: Update Template to Display Data
 
 ```html
-<!-- app.component.html -->
+<!-- item-list.component.html -->
 <div *ngIf="items.length">
   <ul>
     <li *ngFor="let item of items">{{ item.name }}</li>
@@ -175,8 +183,101 @@ export class AppComponent implements OnInit {
 ### Step 3: Add Styles for Error Messages
 
 ```css
-/* app.component.css */
+/* item-list.component.css */
 .error {
   color: red;
   font-weight: bold;
 }
+```
+
+---
+
+### Step 4: Create a Component to Add Data
+Run the following command to create a new component:
+
+```bash
+ng generate component add-item --standalone
+```
+
+This creates the following files:
+- `add-item.component.ts`: Contains the logic for the component.
+- `add-item.component.html`: Contains the template for the component.
+- `add-item.component.css`: Contains the styles for the component.
+
+#### Sample Code
+
+```typescript
+// add-item.component.ts
+import { Component } from '@angular/core';
+import { ApiService } from '../api.service';
+
+@Component({
+  selector: 'app-add-item',
+  standalone: true,
+  templateUrl: './add-item.component.html',
+  styleUrls: ['./add-item.component.css']
+})
+export class AddItemComponent {
+  newItem: any = {};
+  successMessage: string = '';
+  errorMessage: string = '';
+
+  constructor(private apiService: ApiService) {}
+
+  addItem(): void {
+    this.apiService.createItem(this.newItem).subscribe({
+      next: (response) => {
+        this.successMessage = 'Item added successfully!';
+        this.newItem = {};
+      },
+      error: (error) => {
+        this.errorMessage = error.message;
+        console.error('Error adding item:', error);
+      }
+    });
+  }
+}
+```
+
+### Step 5: Update Template to Add Data
+
+```html
+<!-- add-item.component.html -->
+<div>
+  <form (ngSubmit)="addItem()">
+    <label for="name">Name:</label>
+    <input type="text" id="name" [(ngModel)]="newItem.name" name="name" required>
+
+    <button type="submit">Add Item</button>
+  </form>
+
+  <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+  <p *ngIf="errorMessage" class="error">Error: {{ errorMessage }}</p>
+</div>
+```
+
+### Step 6: Add Styles for Success and Error Messages
+
+```css
+/* add-item.component.css */
+.success {
+  color: green;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
+```
+
+---
+
+### Step 7: Integrate the New Component
+Update `app.component.html` to include the `add-item` component:
+
+```html
+<!-- app.component.html -->
+<app-add-item></app-add-item>
+<app-item-list></app-item-list>
+```
