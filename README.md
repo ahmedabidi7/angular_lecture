@@ -109,7 +109,7 @@ export class ApiService {
 
   private handleError(error: any): Observable<never> {
     console.error('An error occurred:', error);
-    return throwError(() => new Error(error.message || 'Server error'));
+    return throwError(()=>error.error.errors);
   }
 }
 ```
@@ -145,7 +145,6 @@ import { ApiService } from '../api.service';
 })
 export class ItemListComponent implements OnInit {
   items: any[] = [];
-  errorMessage: string = '';
 
   constructor(private apiService: ApiService) {}
 
@@ -153,10 +152,6 @@ export class ItemListComponent implements OnInit {
     this.apiService.getItems().subscribe({
       next: (data) => {
         this.items = data;
-      },
-      error: (error) => {
-        this.errorMessage = error.message;
-        console.error('Error fetching items:', error);
       }
     });
   }
@@ -172,22 +167,9 @@ export class ItemListComponent implements OnInit {
     <li *ngFor="let item of items">{{ item.name }}</li>
   </ul>
 </div>
-<div *ngIf="!items.length && !errorMessage">
+<div *ngIf="!items.length">
   <p>No items available.</p>
 </div>
-<div *ngIf="errorMessage">
-  <p class="error">Error: {{ errorMessage }}</p>
-</div>
-```
-
-### Step 3: Add Styles for Error Messages
-
-```css
-/* item-list.component.css */
-.error {
-  color: red;
-  font-weight: bold;
-}
 ```
 
 ---
@@ -210,6 +192,7 @@ This creates the following files:
 // add-item.component.ts
 import { Component } from '@angular/core';
 import { ApiService } from '../api.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-add-item',
@@ -220,7 +203,7 @@ import { ApiService } from '../api.service';
 export class AddItemComponent {
   newItem: any = {};
   successMessage: string = '';
-  errorMessage: string = '';
+  errorMessage: any = {};
 
   constructor(private apiService: ApiService) {}
 
@@ -231,7 +214,7 @@ export class AddItemComponent {
         this.newItem = {};
       },
       error: (error) => {
-        this.errorMessage = error.message;
+        this.errorMessage = error;
         console.error('Error adding item:', error);
       }
     });
@@ -246,13 +229,13 @@ export class AddItemComponent {
 <div>
   <form (ngSubmit)="addItem()">
     <label for="name">Name:</label>
-    <input type="text" id="name" [(ngModel)]="newItem.name" name="name" required>
+    <input type="text" [(ngModel)]="newItem.name" name="name" required>
+    <p *ngIf="errorMessage.name" class="error">Error: {{ errorMessage.name.message }}</p> <br>
 
     <button type="submit">Add Item</button>
   </form>
 
   <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
-  <p *ngIf="errorMessage" class="error">Error: {{ errorMessage }}</p>
 </div>
 ```
 
