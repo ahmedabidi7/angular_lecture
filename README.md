@@ -137,7 +137,7 @@ This creates the following files:
 
 ```typescript
 // item-list.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ApiService } from '../api.service';
 
 @Component({
@@ -146,7 +146,7 @@ import { ApiService } from '../api.service';
   templateUrl: './item-list.component.html',
   styleUrls: ['./item-list.component.css']
 })
-export class ItemListComponent implements OnInit {
+export class ItemListComponent {
   items: any[] = [];
 
   constructor(private apiService: ApiService) {}
