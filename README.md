@@ -177,7 +177,7 @@ export class ItemListComponent {
 
 ---
 
-### Step 4: Create a Component to Add Data
+### Step 3: Create a Component to Add Data
 Run the following command to create a new component:
 
 ```bash
@@ -225,7 +225,7 @@ export class AddItemComponent {
 }
 ```
 
-### Step 5: Update Template to Add Data
+### Step 4: Update Template to Add Data
 
 ```html
 <!-- add-item.component.html -->
@@ -242,7 +242,7 @@ export class AddItemComponent {
 </div>
 ```
 
-### Step 6: Add Styles for Success and Error Messages
+### Step 5: Add Styles for Success and Error Messages
 
 ```css
 /* add-item.component.css */
