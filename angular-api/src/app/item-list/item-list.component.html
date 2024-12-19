@@ -1,0 +1,8 @@
+<div *ngIf="items.length" >
+    <ul>
+        <li *ngFor="let item of items" > {{item.brand}} - {{item.model}}</li>
+    </ul>
+</div>
+<div *ngIf="!items.length">
+    <p>No items available.</p>
+</div>

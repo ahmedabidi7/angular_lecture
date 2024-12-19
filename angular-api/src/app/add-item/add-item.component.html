@@ -1,0 +1,35 @@
+<div>
+    <form (ngSubmit)="addItem()">
+        <label for="brand">Brand:</label>
+        <input type="text" [(ngModel)]="newItem.brand" name="brand" >
+        <p *ngIf="errorMessage.brand" class="error">{{errorMessage.brand.message}}</p>
+
+        <label for="model">Model:</label>
+        <input type="text" [(ngModel)]="newItem.model" name="model" >
+        <p *ngIf="errorMessage.model" class="error">{{errorMessage.model.message}}</p>
+
+        <label for="fuelType">Fuel Type:</label>
+        <select [(ngModel)]="newItem.fuelType" name="fuelType" >
+            <option value="Petrol">Petrol</option>
+            <option value="Diesel">Diesel</option>
+            <option value="Electric">Electric</option>
+            <option value="Hybrid">Hybrid</option>
+            <option value="Other">Other</option>   
+        </select>
+        <p *ngIf="errorMessage.fuelType" class="error">{{errorMessage.fuelType.message}}</p>
+
+        <label for="buildDate">Build Date:</label>
+        <input type="date" [(ngModel)]="newItem.buildDate" name="buildDate" >
+        <p *ngIf="errorMessage.buildDate" class="error">{{errorMessage.buildDate.message}}</p>
+
+        <label for="mileage">Mileage:</label>
+        <input type="number" [(ngModel)]="newItem.mileage" name="mileage" >
+        <p *ngIf="errorMessage.mileage" class="error">{{errorMessage.mileage.message}}</p>
+
+        <label for="new">is New?:</label>
+        <input type="checkbox" [(ngModel)]="newItem.new" name="new" >
+        <p *ngIf="errorMessage.new" class="error">{{errorMessage.new.message}}</p>
+
+        <button type="submit">Add Car</button>
+    </form>
+</div>
