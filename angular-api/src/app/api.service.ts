@@ -24,4 +24,18 @@ export class ApiService {
     console.error('an error occurred!', err)
     return throwError(()=>err.error.errors)
   }
+
+  getItemById(id:string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/cars/${id}`)
+  }
+
+  deleteItem(id:string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/cars/${id}`)
+  }
+
+  editItem(data: Car): Observable<any> {
+    return this.http.put(`${this.baseUrl}/cars/${data._id}`, data).pipe(
+      catchError(this.handleError)
+    )
+  }
 }

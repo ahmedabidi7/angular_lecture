@@ -1,6 +1,10 @@
 <div *ngIf="items.length" >
     <ul>
-        <li *ngFor="let item of items" > {{item.brand}} - {{item.model}}</li>
+        <li *ngFor="let item of items" > {{item.brand}} - {{item.model}}
+            <a routerLink="/car/{{item._id}}">view</a> | 
+            <a routerLink="/car/{{item._id}}/edit">edit</a> | 
+            <a href="#" (click)="deleteItem(item._id)" >delete</a>
+        </li>
     </ul>
 </div>
 <div *ngIf="!items.length">
