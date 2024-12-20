@@ -257,3 +257,203 @@ export class AddItemComponent {
 }
 ```
 
+### Step 6: View One Item
+
+#### Create a New Component
+
+Run the following command:
+
+```bash
+ng generate component view-item
+```
+
+#### Sample Code
+
+```typescript
+// view-item.component.ts
+import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ApiService } from '../api.service';
+
+@Component({
+  selector: 'app-view-item',
+  standalone: true,
+  templateUrl: './view-item.component.html',
+  styleUrls: ['./view-item.component.css']
+})
+export class ViewItemComponent {
+  item: any = null;
+
+  constructor(private apiService: ApiService, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    const itemId = this.route.snapshot.paramMap.get('id');
+    if (itemId) {
+      this.apiService.getItemById(itemId).subscribe({
+        next: (data) => {
+          this.item = data;
+        },
+        error: (error) => {
+          console.error('Error fetching item:', error);
+        }
+      });
+    }
+  }
+}
+```
+
+```html
+<!-- view-item.component.html -->
+<div *ngIf="item">
+  <h2>{{ item.name }}</h2>
+  <p>{{ item.description }}</p>
+</div>
+<div *ngIf="!item">
+  <p>Loading...</p>
+</div>
+```
+
+---
+
+### Step 7: Edit an Item
+
+#### Create a New Component
+
+Run the following command:
+
+```bash
+ng generate component edit-item
+```
+
+#### Sample Code
+
+```typescript
+// edit-item.component.ts
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ApiService } from '../api.service';
+
+@Component({
+  selector: 'app-edit-item',
+  standalone: true,
+  templateUrl: './edit-item.component.html',
+  styleUrls: ['./edit-item.component.css']
+})
+export class EditItemComponent {
+  item: any = {};
+  errorMessage: any = {};
+
+  constructor(private apiService: ApiService, private route: ActivatedRoute, private router: Router) {}
+
+  ngOnInit(): void {
+    const itemId = this.route.snapshot.paramMap.get('id');
+    if (itemId) {
+      this.apiService.getItemById(itemId).subscribe({
+        next: (data) => {
+          this.item = data;
+        },
+        error: (error) => {
+          console.error('Error fetching item:', error);
+        }
+      });
+    }
+  }
+
+  updateItem(): void {
+    this.apiService.updateItem(this.item.id, this.item).subscribe({
+      next: () => {
+  
+        this.router.navigate(['/items']);
+      },
+      error: (error) => {
+        this.errorMessage=error;
+      }
+    });
+  }
+}
+```
+
+```html
+<!-- edit-item.component.html -->
+<div>
+  <form (ngSubmit)="updateItem()">
+    <label for="name">Name:</label>
+    <input type="text" [(ngModel)]="item.name" name="name" required>
+
+    <label for="description">Description:</label>
+    <textarea [(ngModel)]="item.description" name="description" required></textarea>
+
+    <button type="submit">Update Item</button>
+  </form>
+
+  <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+</div>
+```
+
+---
+
+### Step 8: Delete an Item
+
+#### Add a Delete Button in the Item List Component
+
+```html
+<!-- item-list.component.html -->
+<div *ngIf="items.length">
+  <ul>
+    <li *ngFor="let item of items">
+      {{ item.name }}
+      <button (click)="deleteItem(item.id)">Delete</button>
+    </li>
+  </ul>
+</div>
+<div *ngIf="!items.length">
+  <p>No items available.</p>
+</div>
+```
+
+#### Update the Item List Component
+
+```typescript
+// item-list.component.ts
+import { Component } from '@angular/core';
+import { ApiService } from '../api.service';
+
+@Component({
+  selector: 'app-item-list',
+  standalone: true,
+  templateUrl: './item-list.component.html',
+  styleUrls: ['./item-list.component.css']
+})
+export class ItemListComponent {
+  items: any[] = [];
+
+  constructor(private apiService: ApiService) {}
+
+  ngOnInit(): void {
+    this.fetchItems();
+  }
+
+  fetchItems(): void {
+    this.apiService.getItems().subscribe({
+      next: (data) => {
+        this.items = data;
+      },
+      error: (error) => {
+        console.error('Error fetching items:', error);
+      }
+    });
+  }
+
+  deleteItem(id: string): void {
+    this.apiService.deleteItem(id).subscribe({
+      next: () => {
+        this.items = this.items.filter(item => item.id !== id);
+      },
+      error: (error) => {
+        console.error('Error deleting item:', error);
+      }
+    });
+  }
+}
+```
