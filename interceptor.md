@@ -1,4 +1,4 @@
-Here is a README file explaining how to set up and use an interceptor in an Angular app:
+Here is an updated README file with the additional step for generating the interceptor file using the Angular CLI:
 
 ---
 
@@ -8,7 +8,25 @@ This guide explains the steps to add an HTTP interceptor in an Angular applicati
 
 ---
 
-## **1. Create the Interceptor**
+## **1. Generate the Interceptor File**
+
+Use the Angular CLI to generate the interceptor file. This will create the file with the basic structure for an interceptor.
+
+Run the following command:
+
+```bash
+ng generate interceptor interceptors/token
+```
+
+This will create two files:
+- `src/app/interceptors/token.interceptor.ts`
+- `src/app/interceptors/token.interceptor.spec.ts`
+
+---
+
+## **2. Implement the Interceptor Logic**
+
+Update the generated `token.interceptor.ts` file with the following logic:
 
 ### File: `interceptors/token.interceptor.ts`
 
@@ -32,7 +50,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
 ---
 
-## **2. Add the Interceptor to the App Configuration**
+## **3. Add the Interceptor to the App Configuration**
 
 Update your application's configuration to include the interceptor.
 
@@ -54,9 +72,9 @@ export const appConfig = {
 
 ---
 
-## **3. Use the Interceptor in the API Service**
+## **4. Use the Interceptor in the API Service**
 
-Make your API service injectable and use the Angular HTTP client. The interceptor will automatically apply to all HTTP requests.
+Create or update your API service to make HTTP requests. The interceptor will automatically apply to all HTTP requests.
 
 ### File: `services/api.service.ts`
 
@@ -87,7 +105,7 @@ export class ApiService {
 
 ---
 
-## **4. Run and Test the App**
+## **5. Run and Test the App**
 
 1. Ensure that the `authToken` is stored in the browser's `localStorage` before making API requests:
    ```javascript
@@ -96,13 +114,5 @@ export class ApiService {
 2. Use the `ApiService` in your Angular components to make HTTP requests. The interceptor will automatically attach the token to the `Authorization` header.
 
 ---
-
-## **Notes**
-
-- The interceptor will not add the token if it is `null` or not found in `localStorage`.
-- Customize the `Authorization` header or token retrieval logic as needed for your app.
-- Ensure your backend server accepts and validates the `Authorization` header.
-
---- 
 
 This setup ensures secure and consistent handling of the authentication token for all API requests in your Angular app.
